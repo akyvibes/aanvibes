@@ -1,44 +1,31 @@
-import { getWeather } from './store_new.js';
+const fetch = require('node-fetch');
 
-// Simple weather app example using localStorage caching
-
-document.getElementById('searchForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    const city = document.getElementById('cityName').value.trim();
-    if (!city) {
-        alert('Please enter a city name.');
-        return;
-    }
+exports.handler = async (event) => {
+    const { city } = event.queryStringParameters;
+    const API_KEY = process.env.OPENWEATHER_API_KEY;
 
     try {
-        const weather = await getWeather(city);
-        // Display weather data (simple example)
-        document.getElementById('weatherResult').innerHTML = 
-            `<div>
-                <h3>${weather.city}</h3>
-                <img src="${weather.icon}" alt="Weather icon" />
-                <p>${weather.description}</p>
-                <p>Temperature: ${weather.temperature}°C</p>
-            </div>`;
-    } catch (err) {
-        alert('Could not get weather data.');
-        console.error(err);
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+        );
+        
+        if (!response.ok) throw new Error('City not found');
+        
+        const data = await response.json();
+        
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                city: data.name,
+                temp: Math.round(data.main.temp),
+                description: data.weather[0].description,
+                icon: data.weather[0].icon
+            })
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: error.message })
+        };
     }
-});
-
-window.addEventListener('load', () => {
-    // Optionally load default city weather on page load
-    const defaultCity = 'Delhi';
-    getWeather(defaultCity).then(weather => {
-        document.getElementById('weatherResult').innerHTML = 
-            `<div>
-                <h3>${weather.city}</h3>
-                <img src="${weather.icon}" alt="Weather icon" />
-                <p>${weather.description}</p>
-                <p>Temperature: ${weather.temperature}°C</p>
-            </div>`;
-        document.getElementById('cityName').value = defaultCity;
-    }).catch(err => {
-        console.error(err);
-    });
-});
+};
