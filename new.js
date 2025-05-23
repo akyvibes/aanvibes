@@ -126,7 +126,7 @@ window.addEventListener('load', () => {
 // Function to fetch weather news using NewsAPI.org (replace YOUR_API_KEY with a valid key)
 async function getWeatherNews(city) {
     const apiKey = 'YOUR_API_KEY'; // You need to get your own API key from https://newsapi.org/
-    const url = `https://newsapi.org/v2/everything?q=weather+${encodeURIComponent(city)}&sortBy=publishedAt&language=en&apiKey=${apiKey}`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}`;
 
     try {
         const response = await fetch(url);
