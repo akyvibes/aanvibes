@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather Application</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #6dd5fa, #2980b9);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            margin-top: 40px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        main {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px 40px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            width: 320px;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        button {
+            background-color: #3498db;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .weather-info {
+            margin-top: 20px;
+        }
+        .weather-info img {
+            width: 100px;
+            height: 100px;
+        }
+        .temperature {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .description {
+            font-size: 1.2rem;
+            font-style: italic;
+            text-transform: capitalize;
+        }
+        .city-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>Weather Application</header>
+    <main>
+        <select id="cityInput">
+            <option value="Kathmandu">Kathmandu</option>
+            <option value="Pokhara">Pokhara</option>
+            <option value="Biratnagar">Biratnagar</option>
+            <option value="Lalitpur">Lalitpur</option>
+            <option value="Bharatpur">Bharatpur</option>
+            <option value="Birgunj">Birgunj</option>
+            <option value="Dharan">Dharan</option>
+            <option value="Nepalgunj">Nepalgunj</option>
+            <option value="Hetauda">Hetauda</option>
+            <option value="Butwal">Butwal</option>
+            <option value="mahendranagar">mahendranagar</option>
+        </select>
+        <button id="getWeatherBtn">Get Weather</button>
+        <div class="weather-info" id="weatherInfo" style="display:none;">
+            <div class="city-name" id="cityName"></div>
+            <img id="weatherIcon" src="" alt="Weather Icon" />
+            <div class="temperature" id="temperature"></div>
+            <div class="description" id="description"></div>
+        </div>
+        <canvas id="temperatureChart" width="320" height="200" style="margin-top: 20px;"></canvas>
+
+        <section id="weatherNews" style="margin-top: 30px; text-align: left;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 15px; border-bottom: 2px solid #2980b9; padding-bottom: 5px;">Weather News</h2>
+            <ul id="newsList" style="list-style: none; padding-left: 0; max-height: 200px; overflow-y: auto;">
+                <!-- News items will be inserted here -->
+            </ul>
+        </section>
+    </main>
+    <footer>Powered by OpenWeatherMap API</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="new.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
