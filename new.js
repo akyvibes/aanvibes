@@ -1,4 +1,17 @@
 async function getWeather(city) {
+    const cacheKey = 'weather_' + city.toLowerCase();
+    const cached = localStorage.getItem(cacheKey);
+    const now = Date.now();
+
+    if (cached) {
+        const cachedObj = JSON.parse(cached);
+        if (now - cachedObj.time < 60 * 60 * 1000) { // 1 hour cache
+            console.log('Using cached weather data for', city);
+            updateWeatherUI(cachedObj.data);
+            return;
+        }
+    }
+
     const url = `weather.php?city=${encodeURIComponent(city)}`;
     try {
         const response = await fetch(url);
@@ -6,12 +19,8 @@ async function getWeather(city) {
         console.log(data);
 
         if (data.temperature !== null) {
-            document.getElementById('cityName').innerText = data.city;
-            document.getElementById('temperature').innerText = `${data.temperature} °C`;
-            document.getElementById('description').innerText = data.description;
-            document.getElementById('weatherIcon').src = `http://openweathermap.org/img/wn/${data.icon}@2x.png`;
-            document.getElementById('weatherIcon').alt = data.description;
-            document.getElementById('weatherInfo').style.display = 'block';
+            localStorage.setItem(cacheKey, JSON.stringify({ data: data, time: now }));
+            updateWeatherUI(data);
         } else {
             document.getElementById('weatherInfo').style.display = 'none';
             alert('Weather data not found for the specified city.');
@@ -20,6 +29,15 @@ async function getWeather(city) {
         console.error('Error fetching weather data:', error);
         alert('Failed to fetch weather data.');
     }
+}
+
+function updateWeatherUI(data) {
+    document.getElementById('cityName').innerText = data.city;
+    document.getElementById('temperature').innerText = `${data.temperature} °C`;
+    document.getElementById('description').innerText = data.description;
+    document.getElementById('weatherIcon').src = `http://openweathermap.org/img/wn/${data.icon}@2x.png`;
+    document.getElementById('weatherIcon').alt = data.description;
+    document.getElementById('weatherInfo').style.display = 'block';
 }
 
 let temperatureChart = null;

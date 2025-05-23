@@ -4,14 +4,14 @@ ini_set('display_errors', 1);
 
 $apiKey = 'd0297d463117d7a11c5bb09cfb925a76';
 
-$host = 'YOUR_INFINITYFREE_DB_HOST';
-$username = 'YOUR_INFINITYFREE_DB_USERNAME';
-$password = 'YOUR_INFINITYFREE_DB_PASSWORD';
-$database = 'YOUR_INFINITYFREE_DB_NAME';
+// Update these with your actual database credentials
+$host = getenv('DB_HOST') ?: 'localhost';
+$username = getenv('DB_USERNAME') ?: 'root';
+$password = getenv('DB_PASSWORD') ?: '';
+$database = getenv('DB_NAME') ?: 'weather';
 $port = 3306;
 
 $conn = mysqli_connect($host, $username, $password, $database, $port);
-
 
 if (!$conn) {
     http_response_code(500);
@@ -20,8 +20,17 @@ if (!$conn) {
 }
 
 // Create database if not exists
-$createDatabase = "CREATE DATABASE IF NOT EXISTS weather";
+$createDatabase = "CREATE DATABASE IF NOT EXISTS $database";
 $query = mysqli_query($conn, $createDatabase);
+
+if (!$query) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Failed to create database: ' . mysqli_error($conn)]);
+    exit;
+}
+
+// Select the database after creation
+mysqli_select_db($conn, $database);
 
 // Create table for weather data
 $createTable = "CREATE TABLE IF NOT EXISTS weather_data(
@@ -32,6 +41,12 @@ $createTable = "CREATE TABLE IF NOT EXISTS weather_data(
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )";
 $table_query = mysqli_query($conn, $createTable);
+
+if (!$table_query) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Failed to create table: ' . mysqli_error($conn)]);
+    exit;
+}
 
 if (isset($_GET['city'])) {
     $city = $_GET['city'];
